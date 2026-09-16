@@ -1,0 +1,3 @@
+const fs=require('node:fs');const vm=require('node:vm');const assert=require('node:assert/strict');
+const html=fs.readFileSync(__dirname+'/orbit.html','utf8');const script=html.split('<script>')[1].split('</script>')[0];new vm.Script(script);const engine=script.slice(0,script.indexOf('const $=id=>'));assert.ok(engine.includes('runSalvageTests'));
+const results=vm.runInNewContext(engine+';runSalvageTests()', {Date,console});console.log(results.join('\n'));assert.equal(results.filter(x=>x.startsWith('FAIL')).length,0);assert.equal(results.length,26);console.log('26/26 passed; complete page script parses.');
